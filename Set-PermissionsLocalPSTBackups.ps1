@@ -1,17 +1,18 @@
 ﻿<#
 .SYNOPSIS
-Monitor and modify permissions that are required for a computer account to backup to a synology nas.
+Monitor and modify permissions that are required for a computer account to backup to a Synology nas.
 
 .DESCRIPTION
-
+This will check permissions on the pst backup path and if the computer account is not listed it will then grant the computer account permission to create.
 
 .NOTES
-Requires PoSHSSH
+#### Requires PoSHSSH #####
+The Set-Acl commandlet does not work on Synology Nases for some reason.
 Use this in a domain environment
 I store the password as a secure string in a text file.
 you could do the same! read-host -assecurestring | convertfrom-securestring | out-file C:\cred.txt
 There are two different methods it uses to try and apply permissions via ssh as it doesn't always work the first round.
-#######this requires poshSSH#########
+#### Requires PoshSSH #####
 #>
 $comps = "list of computer names"
 $password = get-content "c:\scripts\localcreds.txt" | convertto-securestring
