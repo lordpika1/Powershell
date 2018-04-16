@@ -7,7 +7,7 @@ foreach ($c in $comps){
 $Release = $null
 if (Test-Connection $c -Count 2 -Quiet){
 
-    Invoke-Command -ComputerName $c -ErrorAction SilentlyContinue -ScriptBlock{
+    try{Invoke-Command -ComputerName $c -ErrorAction stop -ScriptBlock{
     $NetRegKey = Get-Childitem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' 
     $Release = $NetRegKey.GetValue("Release")
     Switch ($Release) {
@@ -31,14 +31,16 @@ if (Test-Connection $c -Count 2 -Quiet){
             }elseif($Release -ge 393295){
             $NetFrameworkVersion = "At least 4.6 installed"
             }else{
-            $NetFrameworkVersion = "Net Framework 4.5 or later is not installed."}
+            $NetFrameworkVersion = "Net Framework 4.5 or later is not installed."
+                }
             }
         }
         Write-Host $env:COMPUTERNAME"-"$NetFrameworkVersion"-"$release
     }
+    }catch{#end invoke
     $reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey("LocalMachine", "$c")
-$key = $reg.OpenSubKey("SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full")
-$release = $key.getvalue("Release")
+    $key = $reg.OpenSubKey("SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full")
+    $release = $key.getvalue("Release")
  Switch ($Release) {
             378389 {$NetFrameworkVersion = "4.5"}
             378675 {$NetFrameworkVersion = "4.5.1"}
@@ -64,7 +66,8 @@ $release = $key.getvalue("Release")
             }
         }
 Write-Host $c"-"$NetFrameworkVersion"-"$release
-}
+    }
+}#end test-connection
     #Write-Host $c"-"$NetFrameworkVersion"-"$release
 }
 
