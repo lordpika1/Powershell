@@ -64,7 +64,7 @@ $lastRun = (get-date (Get-Content $lastRunPath)).AddHours(-5).ToUniversalTime()
 
 else{
 
-$lastRun = (get-date (Get-Content $lastRunPath)).AddHours(12).ToUniversalTime()
+$lastRun = (get-date (Get-Content $lastRunPath)).AddHours(-12).ToUniversalTime()
 
 }#>
 
